@@ -24,12 +24,7 @@ public class VerbController {
 	
 	@GetMapping("/verb/{user_id}")
 	public List<Verb> findAllVerb(@PathVariable("user_id") Integer user_id){
-		log.info("findAllVerb");
-		log.debug("findAllVerb");
-		log.warn("findAllVerb");
-		log.error("findAllVerb");
-		log.fatal("findAllVerb");
-		
+		log.info("findAllVerb");	
 		List<Verb> list = verbService.findAllVerbByUserId(user_id);
 		return list;
 	}

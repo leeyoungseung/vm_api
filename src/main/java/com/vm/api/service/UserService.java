@@ -1,9 +1,12 @@
 package com.vm.api.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,8 @@ import com.vm.api.repo.UserRepository;
 
 @Service
 public class UserService {
+	
+	private static final Logger log = LogManager.getLogger(UserService.class.getName());
 	
 	@Autowired
 	UserRepository userRepository;
@@ -57,6 +62,47 @@ public class UserService {
 			userRepository.getOne(user_id);
 		}catch (EntityNotFoundException e) {res = true;}
 		return res;
+	}
+
+
+	/**
+	 * 유저가 있는 지 여부 확인 
+	 * 유저가 존재할 시 0; 유저가 없을시 1;
+	 * @param user_mail
+	 * @return
+	 */
+	public int checkUserMail(String user_mail) {
+		List<User> list= userRepository.checkUserMail(user_mail);
+
+		if(list.size() > 0) {
+			return 0;
+		}else {
+			return 1;
+		}
+	}
+	
+	/**
+	 * 등록한 이메일에 해당하는 비번이 맞는지 확인
+	 * @param user_mail
+	 * @param user_passwd
+	 * @return
+	 */
+	public HashMap checkUserPassword(String user_mail, String user_passwd) {
+		List<User> list = userRepository.checkUserPassword(user_mail, user_passwd);
+		HashMap res = new HashMap<>();
+		
+		if(list.size() > 0) {
+			log.info("login success");
+			res.put("msg", 0);
+			res.put("data", list.get(0));
+			
+		}else if(list.size() == 0){
+			log.info("login failed");
+			res.put("msg", 1);
+		}
+		
+		return res;
+		
 	}
 	
 

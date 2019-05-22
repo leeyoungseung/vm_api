@@ -1,15 +1,22 @@
 package com.vm.api.controller;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vm.api.model.Verb;
 import com.vm.api.service.VerbService;
 
@@ -23,19 +30,171 @@ public class VerbController {
 	VerbService verbService;
 	
 	@GetMapping("/verb/{user_id}")
-	public List<Verb> findAllVerb(@PathVariable("user_id") Integer user_id){
+	public VerbResponseBean findAllVerb(@PathVariable("user_id") Integer user_id){
 		log.info("findAllVerb");	
+		VerbResponseBean response = new VerbResponseBean();
 		List<Verb> list = verbService.findAllVerbByUserId(user_id);
-		return list;
+		
+		if(list == null) {
+			response.setMessage("Failed List Verb");
+			response.setRes(false);
+		}else {
+			response.setMessage("Success List Verb");
+			response.setData(list);
+			response.setRes(true);
+		}
+		
+		return response;
 	}
 	
-	@GetMapping("/verb/{user_id}/{verb_id")
-	public Verb findOneVerb(@PathVariable("user_id") Integer user_id
+	@GetMapping("/verb/{user_id}/{verb_id}")
+	public VerbResponseBean findOneVerb(@PathVariable("user_id") Integer user_id
 			, @PathVariable("verb_id") Integer verb_id) {
 		log.debug("findOneVerb");
+		VerbResponseBean response = new VerbResponseBean();
 		Verb verb = verbService.findOneVerb(verb_id);
-		return verb;
+		List<Verb> resData = new ArrayList<Verb>();
+		
+		if(verb == null) {
+			response.setMessage("Failed Get Verb");
+			response.setRes(false);
+		}else {
+			response.setMessage("Success Get Verb");
+			resData.add(0, verb);
+			response.setData(resData);
+			response.setRes(true);
+		}
+		
+		return response;
 	}
 	
+	
+	@PostMapping("/verb/{user_id}")
+	public VerbResponseBean createVerb(@PathVariable("user_id") Integer user_id,
+			@RequestBody Verb verb){
+		log.info("createVerb");
+		VerbResponseBean response = new VerbResponseBean();
+		Verb createdVerb = verbService.createVerb(verb);
+		List<Verb> resData = new ArrayList<Verb>();
+		
+		if(createdVerb == null) {
+			response.setMessage("Failed Create Verb");
+			response.setData(verbService.findAllVerbByUserId(user_id));
+			response.setRes(false);
+		}else {
+			response.setMessage("Success Create Verb");
+			resData.add(0, createdVerb);
+			response.setData(resData);
+			response.setRes(true);
+		}
+		
+		return response;
+	}
+	
+	
+	@PutMapping("/verb/{user_id}/{verb_id}")
+	public VerbResponseBean updateVerb(@PathVariable("verb_id") Integer verb_id,
+			@RequestBody Verb verb) {
+		log.info("updateVerb");
+		VerbResponseBean response = new VerbResponseBean();
+		Verb updatedVerb = verbService.updateVerb(verb_id, verb);
+		List<Verb> resData = new ArrayList<Verb>();
+		
+		if(updatedVerb == null) {
+			response.setMessage("Failed Update Verb");
+			resData.add(0, verbService.findOneVerb(verb_id));
+			response.setData(resData);
+			response.setRes(false);
+		}else {
+			response.setMessage("Success Update Verb");
+			resData.add(0, updatedVerb);
+			response.setData(resData);
+			response.setRes(true);
+		}
+		
+		return response;
+	}
+	
+	
+	@DeleteMapping("/verb/{user_id}/{verb_id}")
+	public VerbResponseBean deleteVerb(@PathVariable("verb_id") Integer verb_id) {
+		log.info("deleteVerb");
+		VerbResponseBean response = new VerbResponseBean();
+		
+		boolean res = verbService.deleteVerb(verb_id);
+		if(!res) {
+			response.setMessage("Failed Delete Verb");
+			response.setRes(false);
+		}else {
+			response.setMessage("Success Delete Verb");
+			response.setRes(true);
+		}
+			
+		return response;
+		
+	}
+	
+	
 
+}
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+class VerbRequestBean implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1700757480588648185L;
+	
+	private String message;
+	private List<Verb> data;
+	
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	public List<Verb> getData() {
+		return data;
+	}
+	public void setData(List<Verb> data) {
+		this.data = data;
+	}
+	
+	
+}
+
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+class VerbResponseBean implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2462960532603595150L;
+	
+	private String message;
+	private boolean res;
+	private List<Verb> data;
+	
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	public List<Verb> getData() {
+		return data;
+	}
+	public void setData(List<Verb> data) {
+		this.data = data;
+	}
+	public boolean isRes() {
+		return res;
+	}
+	public void setRes(boolean res) {
+		this.res = res;
+	}
+	
+	
 }

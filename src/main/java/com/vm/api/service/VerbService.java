@@ -36,8 +36,24 @@ public class VerbService {
 	
 	
 	public Verb createVerb(Verb verb) {
-		Verb createdVerb = verbRepository.save(verb);
-		return createdVerb;
+		Integer user_id = verb.getUser_id();
+		String verb_title = verb.getVerb_title();
+		
+		if(isVerb(user_id, verb_title)) {
+			return verbRepository.save(verb);
+		}
+		
+		return null;
+	}
+	
+	public boolean isVerb(final Integer user_id, final String verb_title) {
+		
+		Verb forCheckVerb = verbRepository.checkIsVerb(user_id, verb_title);
+		if(forCheckVerb == null) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	

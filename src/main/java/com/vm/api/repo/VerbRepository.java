@@ -12,7 +12,7 @@ public interface VerbRepository extends JpaRepository<Verb, Integer> {
 	@Query(value = "SELECT * FROM verb v WHERE v.user_id=?1", nativeQuery = true)
 	List<Verb> findAllVerbByUserId(Integer user_id);
 
-	@Query(value = "SELECT * FROM verb v WHERE v.user_id=?1 AND v.verb_title=2?", nativeQuery = true)
+	@Query(value = "SELECT * FROM verb v WHERE v.user_id=?1 AND v.verb_title=?2", nativeQuery = true)
 	Verb checkIsVerb(Integer user_id, String title);
 
 }

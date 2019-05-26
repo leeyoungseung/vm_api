@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vm.api.RequestBean;
+import com.vm.api.ResponseBean;
 import com.vm.api.model.Verb;
 import com.vm.api.service.VerbService;
 
@@ -29,6 +31,10 @@ public class VerbController {
 	@Autowired
 	VerbService verbService;
 	
+	/**
+	 * 유저가 등록한 동사단어 리스트
+	 * @param user_id
+	 */
 	@GetMapping("/verb/{user_id}")
 	public VerbResponseBean findAllVerb(@PathVariable("user_id") Integer user_id){
 		log.info("findAllVerb");	
@@ -47,6 +53,12 @@ public class VerbController {
 		return response;
 	}
 	
+	
+	/**
+	 * 유저가 등록한 동사단어 하나의 정보
+	 * @param user_id
+	 * @param verb_id
+	 */
 	@GetMapping("/verb/{user_id}/{verb_id}")
 	public VerbResponseBean findOneVerb(@PathVariable("user_id") Integer user_id
 			, @PathVariable("verb_id") Integer verb_id) {
@@ -69,10 +81,16 @@ public class VerbController {
 	}
 	
 	
-	@PostMapping("/verb/{user_id}")
-	public VerbResponseBean createVerb(@PathVariable("user_id") Integer user_id,
-			@RequestBody Verb verb){
+	/**
+	 * 동사정보 등록
+	 * @param request
+	 */
+	@PostMapping("/verb")
+	public VerbResponseBean createVerb(@RequestBody VerbRequestBean request){
 		log.info("createVerb");
+		Verb verb = request.getData().get(0);
+		Integer user_id = request.getData().get(0).getUser_id();
+		
 		VerbResponseBean response = new VerbResponseBean();
 		Verb createdVerb = verbService.createVerb(verb);
 		List<Verb> resData = new ArrayList<Verb>();
@@ -91,14 +109,22 @@ public class VerbController {
 		return response;
 	}
 	
-	
-	@PutMapping("/verb/{user_id}/{verb_id}")
-	public VerbResponseBean updateVerb(@PathVariable("verb_id") Integer verb_id,
-			@RequestBody Verb verb) {
+	/**
+	 * 동사정보 수정
+	 * @param request
+	 * @return
+	 */
+	@PutMapping("/verb")
+	public VerbResponseBean updateVerb(@RequestBody VerbRequestBean request) {
 		log.info("updateVerb");
+		Verb verb = request.getData().get(0);
+		Integer verb_id = verb.getVerb_id();
+		
+		
 		VerbResponseBean response = new VerbResponseBean();
-		Verb updatedVerb = verbService.updateVerb(verb_id, verb);
+		Verb updatedVerb = verbService.updateVerb(verb);
 		List<Verb> resData = new ArrayList<Verb>();
+		
 		
 		if(updatedVerb == null) {
 			response.setMessage("Failed Update Verb");
@@ -115,10 +141,14 @@ public class VerbController {
 		return response;
 	}
 	
-	
-	@DeleteMapping("/verb/{user_id}/{verb_id}")
+	/**
+	 * 동사정보 삭제
+	 * @param verb_id
+	 */
+	@DeleteMapping("/verb/{verb_id}")
 	public VerbResponseBean deleteVerb(@PathVariable("verb_id") Integer verb_id) {
 		log.info("deleteVerb");
+		
 		VerbResponseBean response = new VerbResponseBean();
 		
 		boolean res = verbService.deleteVerb(verb_id);
@@ -138,22 +168,12 @@ public class VerbController {
 
 }
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-class VerbRequestBean implements Serializable{
+class VerbRequestBean extends RequestBean implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1700757480588648185L;
 	
-	private String message;
 	private List<Verb> data;
 	
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
 	public List<Verb> getData() {
 		return data;
 	}
@@ -166,35 +186,18 @@ class VerbRequestBean implements Serializable{
 
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-class VerbResponseBean implements Serializable{
+class VerbResponseBean extends ResponseBean implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2462960532603595150L;
 	
-	private String message;
-	private boolean res;
 	private List<Verb> data;
 	
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
+
 	public List<Verb> getData() {
 		return data;
 	}
 	public void setData(List<Verb> data) {
 		this.data = data;
 	}
-	public boolean isRes() {
-		return res;
-	}
-	public void setRes(boolean res) {
-		this.res = res;
-	}
-	
-	
+
 }

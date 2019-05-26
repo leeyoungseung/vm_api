@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vm.api.RequestBean;
+import com.vm.api.ResponseBean;
 import com.vm.api.model.Sentence;
 import com.vm.api.service.SentenceService;
 
@@ -50,7 +52,7 @@ public class SentenceController {
 	}
 	
 	
-	@GetMapping("/sentence/{user_id}/{verb_id}/{s_id}")
+	@GetMapping("/sentence/{verb_id}/{s_id}")
 	public SentenceResponseBean findOneSentence(
 			@PathVariable("s_id") Integer s_id) {
 		log.debug("findOneSentence");
@@ -75,8 +77,11 @@ public class SentenceController {
 	
 	@PostMapping("/sentence")
 	public SentenceResponseBean createSentence(
-			@RequestBody Sentence sentence) {
+			@RequestBody SentenceRequestBean request) {
 		log.debug("createSentence");
+		
+		Sentence sentence = request.getData().get(0);
+		
 		SentenceResponseBean response = new SentenceResponseBean();
 		List<Sentence> resData = new ArrayList<Sentence>();
 		Sentence createSentence = sentenceService.createSentence(sentence);
@@ -96,14 +101,17 @@ public class SentenceController {
 	}
 	
 	
-	@PutMapping("/verb/{s_id}")
-	public SentenceResponseBean updateSentence(@PathVariable("s_id") Integer s_id,
-			@RequestBody Sentence sentence) {
+	@PutMapping("/sentence")
+	public SentenceResponseBean updateSentence(@RequestBody SentenceRequestBean request) {
 		log.info("updateSentence");
+		Sentence sentence = request.getData().get(0);
+		Integer s_id = sentence.getS_id();
+		
+		
 		SentenceResponseBean response = new SentenceResponseBean();
 		List<Sentence> resData = new ArrayList<Sentence>();
 		
-		Sentence updatedSentence = sentenceService.updateSentence(s_id, sentence);
+		Sentence updatedSentence = sentenceService.updateSentence(sentence);
 		
 		if(updatedSentence == null) {
 			response.setMessage("Failed Update Sentence");
@@ -120,10 +128,15 @@ public class SentenceController {
 		return response;
 	}
 	
-	
-	@DeleteMapping("/verb/{s_id}")
+	/**
+	 * 문장 삭제
+	 */
+	@DeleteMapping("/sentence/{s_id}")
 	public SentenceResponseBean deleteSentence(@PathVariable("s_id") Integer s_id) {
 		log.info("deleteSentence");
+		
+		
+		
 		SentenceResponseBean response = new SentenceResponseBean();
 		
 		boolean res = sentenceService.deleteSentence(s_id);
@@ -142,28 +155,28 @@ public class SentenceController {
 }
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-class SentenceResponseBean implements Serializable{
+class SentenceRequestBean extends RequestBean implements Serializable{
 
-	/**
-	 * 
-	 */
+	private static final long serialVersionUID = -5646579874238969227L;
+	
+	private List<Sentence> data;
+
+	public List<Sentence> getData() {
+		return data;
+	}
+	public void setData(List<Sentence> data) {
+		this.data = data;
+	}
+}
+
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+class SentenceResponseBean extends ResponseBean implements Serializable{
+
 	private static final long serialVersionUID = -6944868810520812223L;
 	
-	private String message;
-	private boolean res;
 	private List<Sentence> data;
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	public boolean isRes() {
-		return res;
-	}
-	public void setRes(boolean res) {
-		this.res = res;
-	}
+
 	public List<Sentence> getData() {
 		return data;
 	}

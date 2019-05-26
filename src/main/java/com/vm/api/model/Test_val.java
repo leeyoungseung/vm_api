@@ -27,6 +27,21 @@ public class Test_val {
 	
 	@Column(name = "q_res")
 	private Integer q_res;
+	
+	@Column(name = "q_question")
+	private String q_question;
+	
+	@Column(name = "q_ok_word")
+	private String q_ok_word;
+	
+	@Column(name = "q_ng_word1")
+	private String q_ng_word1;
+	
+	@Column(name = "q_ng_word2")
+	private String q_ng_word2;
+	
+	@Column(name = "q_ng_word3")
+	private String q_ng_word3;
 
 	public Integer getQ_id() {
 		return q_id;
@@ -59,9 +74,46 @@ public class Test_val {
 	public void setQ_res(Integer q_res) {
 		this.q_res = q_res;
 	}
-	
-	
-	
+
+	public String getQ_question() {
+		return q_question;
+	}
+
+	public void setQ_question(String q_question) {
+		this.q_question = q_question;
+	}
+
+	public String getQ_ok_word() {
+		return q_ok_word;
+	}
+
+	public void setQ_ok_word(String q_ok_word) {
+		this.q_ok_word = q_ok_word;
+	}
+
+	public String getQ_ng_word1() {
+		return q_ng_word1;
+	}
+
+	public void setQ_ng_word1(String q_ng_word1) {
+		this.q_ng_word1 = q_ng_word1;
+	}
+
+	public String getQ_ng_word2() {
+		return q_ng_word2;
+	}
+
+	public void setQ_ng_word2(String q_ng_word2) {
+		this.q_ng_word2 = q_ng_word2;
+	}
+
+	public String getQ_ng_word3() {
+		return q_ng_word3;
+	}
+
+	public void setQ_ng_word3(String q_ng_word3) {
+		this.q_ng_word3 = q_ng_word3;
+	}
 	
 	
 

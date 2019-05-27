@@ -32,10 +32,15 @@ public class SentenceController {
 	@Autowired
 	SentenceService sentenceService;
 	
+	/**
+	 * 하나의 단어에 해당하는 문장 리스트 가져오기
+	 * @param verb_id
+	 * @return
+	 */
 	@GetMapping("/sentence/{verb_id}")
 	public SentenceResponseBean findAllSentence( 
 			@PathVariable("verb_id") Integer verb_id ) {
-		log.debug("findAllSentence");
+		log.info("findAllSentence");
 		SentenceResponseBean response = new SentenceResponseBean();
 		
 		List<Sentence> list = sentenceService.findAllSentenceById(verb_id);
@@ -51,7 +56,11 @@ public class SentenceController {
 		return response;
 	}
 	
-	
+	/**
+	 * 문장 하나의 정보 가져오기
+	 * @param s_id
+	 * @return
+	 */
 	@GetMapping("/sentence/{verb_id}/{s_id}")
 	public SentenceResponseBean findOneSentence(
 			@PathVariable("s_id") Integer s_id) {
@@ -74,7 +83,11 @@ public class SentenceController {
 		
 	}
 	
-	
+	/**
+	 * 문장 생성하기
+	 * @param request
+	 * @return
+	 */
 	@PostMapping("/sentence")
 	public SentenceResponseBean createSentence(
 			@RequestBody SentenceRequestBean request) {
@@ -100,7 +113,11 @@ public class SentenceController {
 		return response;
 	}
 	
-	
+	/**
+	 * 문장 수정하기
+	 * @param request
+	 * @return
+	 */
 	@PutMapping("/sentence")
 	public SentenceResponseBean updateSentence(@RequestBody SentenceRequestBean request) {
 		log.info("updateSentence");
@@ -134,8 +151,6 @@ public class SentenceController {
 	@DeleteMapping("/sentence/{s_id}")
 	public SentenceResponseBean deleteSentence(@PathVariable("s_id") Integer s_id) {
 		log.info("deleteSentence");
-		
-		
 		
 		SentenceResponseBean response = new SentenceResponseBean();
 		

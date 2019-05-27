@@ -106,11 +106,11 @@ public class VerbService {
 	}
 	
 	public boolean deleteVerb(Integer verb_id) {
-		boolean res = false;
+		boolean res = true;
 		verbRepository.deleteById(verb_id);
 		try {
 			verbRepository.getOne(verb_id);
-		}catch (EntityNotFoundException e) {res = true;}
+		}catch (EntityNotFoundException e) {res = false;}
 		return res;
 	}
 }

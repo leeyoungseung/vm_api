@@ -73,12 +73,12 @@ public class SentenceService {
 
 
 	public boolean deleteSentence(Integer s_id) {
-		boolean res = false;
+		boolean res = true;
 		sentenceRepo.deleteById(s_id);
 		
 		try {
 			sentenceRepo.getOne(s_id);
-		}catch (EntityNotFoundException e) {res = true;}
+		}catch (EntityNotFoundException e) {res = false;}
 		
 		return res;
 	}
